@@ -13,6 +13,13 @@
 		3C4B3C081DE6ECC0005D02D8 /* ReactiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C071DE6ECC0005D02D8 /* ReactiveKit.framework */; };
 		3C4B3C0A1DE6ECD0005D02D8 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C091DE6ECD0005D02D8 /* Quick.framework */; };
 		3C4B3C0C1DE6ECD4005D02D8 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C0B1DE6ECD4005D02D8 /* Nimble.framework */; };
+		3C4B3C171DE6ED93005D02D8 /* LocationAuthorizationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C0F1DE6ED93005D02D8 /* LocationAuthorizationProvider.swift */; };
+		3C4B3C181DE6ED93005D02D8 /* LocationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C101DE6ED93005D02D8 /* LocationProvider.swift */; };
+		3C4B3C191DE6ED93005D02D8 /* CLGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C121DE6ED93005D02D8 /* CLGeocoder.swift */; };
+		3C4B3C1A1DE6ED93005D02D8 /* CLLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C131DE6ED93005D02D8 /* CLLocation.swift */; };
+		3C4B3C1B1DE6ED93005D02D8 /* CLLocationCoordinate2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C141DE6ED93005D02D8 /* CLLocationCoordinate2D.swift */; };
+		3C4B3C1C1DE6ED93005D02D8 /* CLLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C151DE6ED93005D02D8 /* CLLocationManager.swift */; };
+		3C4B3C1D1DE6ED93005D02D8 /* GeoCalculations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C161DE6ED93005D02D8 /* GeoCalculations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +42,13 @@
 		3C4B3C071DE6ECC0005D02D8 /* ReactiveKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveKit.framework; path = "Carthage/Checkouts/ReactiveKit/build/Debug-iphoneos/ReactiveKit.framework"; sourceTree = "<group>"; };
 		3C4B3C091DE6ECD0005D02D8 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "Carthage/Checkouts/Quick/build/Debug-iphoneos/Quick.framework"; sourceTree = "<group>"; };
 		3C4B3C0B1DE6ECD4005D02D8 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = "Carthage/Checkouts/Nimble/build/Debug-iphoneos/Nimble.framework"; sourceTree = "<group>"; };
+		3C4B3C0F1DE6ED93005D02D8 /* LocationAuthorizationProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationAuthorizationProvider.swift; sourceTree = "<group>"; };
+		3C4B3C101DE6ED93005D02D8 /* LocationProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationProvider.swift; sourceTree = "<group>"; };
+		3C4B3C121DE6ED93005D02D8 /* CLGeocoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLGeocoder.swift; sourceTree = "<group>"; };
+		3C4B3C131DE6ED93005D02D8 /* CLLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLLocation.swift; sourceTree = "<group>"; };
+		3C4B3C141DE6ED93005D02D8 /* CLLocationCoordinate2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLLocationCoordinate2D.swift; sourceTree = "<group>"; };
+		3C4B3C151DE6ED93005D02D8 /* CLLocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLLocationManager.swift; sourceTree = "<group>"; };
+		3C4B3C161DE6ED93005D02D8 /* GeoCalculations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GeoCalculations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +95,8 @@
 		3C4B3BEE1DE6E85A005D02D8 /* Loca */ = {
 			isa = PBXGroup;
 			children = (
+				3C4B3C0E1DE6ED93005D02D8 /* Classes */,
+				3C4B3C111DE6ED93005D02D8 /* Extensions */,
 				3C4B3BEF1DE6E85A005D02D8 /* Loca.h */,
 				3C4B3BF01DE6E85A005D02D8 /* Info.plist */,
 			);
@@ -104,6 +120,27 @@
 				3C4B3C071DE6ECC0005D02D8 /* ReactiveKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3C4B3C0E1DE6ED93005D02D8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3C4B3C0F1DE6ED93005D02D8 /* LocationAuthorizationProvider.swift */,
+				3C4B3C101DE6ED93005D02D8 /* LocationProvider.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		3C4B3C111DE6ED93005D02D8 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				3C4B3C121DE6ED93005D02D8 /* CLGeocoder.swift */,
+				3C4B3C131DE6ED93005D02D8 /* CLLocation.swift */,
+				3C4B3C141DE6ED93005D02D8 /* CLLocationCoordinate2D.swift */,
+				3C4B3C151DE6ED93005D02D8 /* CLLocationManager.swift */,
+				3C4B3C161DE6ED93005D02D8 /* GeoCalculations.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -218,6 +255,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C4B3C171DE6ED93005D02D8 /* LocationAuthorizationProvider.swift in Sources */,
+				3C4B3C181DE6ED93005D02D8 /* LocationProvider.swift in Sources */,
+				3C4B3C191DE6ED93005D02D8 /* CLGeocoder.swift in Sources */,
+				3C4B3C1B1DE6ED93005D02D8 /* CLLocationCoordinate2D.swift in Sources */,
+				3C4B3C1A1DE6ED93005D02D8 /* CLLocation.swift in Sources */,
+				3C4B3C1C1DE6ED93005D02D8 /* CLLocationManager.swift in Sources */,
+				3C4B3C1D1DE6ED93005D02D8 /* GeoCalculations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,10 +394,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/ReactiveKit/build/Debug-iphoneos",
-				);
 				INFOPLIST_FILE = Loca/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -373,10 +413,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/ReactiveKit/build/Debug-iphoneos",
-				);
 				INFOPLIST_FILE = Loca/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -390,12 +426,8 @@
 		3C4B3C041DE6E85B005D02D8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-				);
 				INFOPLIST_FILE = LocaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.tacks.LocaTests;
@@ -407,12 +439,8 @@
 		3C4B3C051DE6E85B005D02D8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = N8N37QWHHP;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Quick/build/Debug-iphoneos",
-					"$(PROJECT_DIR)/Carthage/Checkouts/Nimble/build/Debug-iphoneos",
-				);
 				INFOPLIST_FILE = LocaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.tacks.LocaTests;
