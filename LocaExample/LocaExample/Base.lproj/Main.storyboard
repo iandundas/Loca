@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -56,10 +57,49 @@
                         <viewControllerLayoutGuide type="top" id="vDN-dz-Icl"/>
                         <viewControllerLayoutGuide type="bottom" id="O7a-4y-hwU"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="bFG-pP-hlE">
+                    <view key="view" opaque="NO" contentMode="scaleToFill" id="bFG-pP-hlE">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Output: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ciO-iA-IAY">
+                                <rect key="frame" x="154" y="72" width="67.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kHd-yf-d7d">
+                                <rect key="frame" x="16" y="92.5" width="343" height="530.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="UwA-VV-HhK">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="29"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="26Z-dt-qaT">
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="29"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="UwA-VV-HhK" firstAttribute="width" secondItem="kHd-yf-d7d" secondAttribute="width" id="FYP-ds-fkq"/>
+                                    <constraint firstItem="UwA-VV-HhK" firstAttribute="top" secondItem="kHd-yf-d7d" secondAttribute="top" id="SgE-hx-lvP"/>
+                                    <constraint firstAttribute="trailing" secondItem="UwA-VV-HhK" secondAttribute="trailing" id="b8R-RP-zWw"/>
+                                    <constraint firstAttribute="bottom" secondItem="UwA-VV-HhK" secondAttribute="bottom" id="fRg-Ma-eDd"/>
+                                    <constraint firstItem="UwA-VV-HhK" firstAttribute="leading" secondItem="kHd-yf-d7d" secondAttribute="leading" id="iPz-7o-rOD"/>
+                                </constraints>
+                            </scrollView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="ciO-iA-IAY" firstAttribute="centerX" secondItem="kHd-yf-d7d" secondAttribute="centerX" id="AbK-ha-vef"/>
+                            <constraint firstItem="ciO-iA-IAY" firstAttribute="top" secondItem="vDN-dz-Icl" secondAttribute="bottom" constant="8" id="JGd-am-WBF"/>
+                            <constraint firstItem="O7a-4y-hwU" firstAttribute="top" secondItem="kHd-yf-d7d" secondAttribute="bottom" id="Pie-Dg-l0Y"/>
+                            <constraint firstItem="kHd-yf-d7d" firstAttribute="top" secondItem="ciO-iA-IAY" secondAttribute="bottom" id="RB7-ce-Dy7"/>
+                            <constraint firstItem="kHd-yf-d7d" firstAttribute="leading" secondItem="bFG-pP-hlE" secondAttribute="leadingMargin" id="Wel-iS-wXg"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="kHd-yf-d7d" secondAttribute="trailing" id="uZ7-An-hgo"/>
+                        </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Title" id="iu2-5F-xGU">
@@ -70,10 +110,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="stackView" destination="UwA-VV-HhK" id="mrq-mJ-aHK"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wm7-BM-LlS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2162" y="134"/>
+            <point key="canvasLocation" x="1926" y="134"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="iXi-1l-GOf">

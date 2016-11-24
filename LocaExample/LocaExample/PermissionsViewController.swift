@@ -40,6 +40,14 @@ class PermissionsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        //
+        guard let destination = segue.destinationViewController as? LocationsViewController else {return}
+        guard let locationProvider = LocationProvider() else {return}
+        
+        destination.locationProvider = locationProvider
+    }
 
 }
 
