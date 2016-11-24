@@ -12,6 +12,7 @@
 		3C4B3C4E1DE6EEB8005D02D8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4C1DE6EEB8005D02D8 /* Main.storyboard */; };
 		3C4B3C501DE6EEB8005D02D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4F1DE6EEB8005D02D8 /* Assets.xcassets */; };
 		3C4B3C531DE6EEB8005D02D8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C511DE6EEB8005D02D8 /* LaunchScreen.storyboard */; };
+		3C4B3C5C1DE6EF1B005D02D8 /* Loca.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C5B1DE6EF1B005D02D8 /* Loca.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		3C4B3C4F1DE6EEB8005D02D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3C4B3C521DE6EEB8005D02D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3C4B3C541DE6EEB8005D02D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3C4B3C5B1DE6EF1B005D02D8 /* Loca.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Loca.framework; path = "../../../../Desktop/Build/Products/Debug-iphonesimulator/Loca.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C4B3C5C1DE6EF1B005D02D8 /* Loca.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -40,6 +43,7 @@
 			children = (
 				3C4B3C471DE6EEB8005D02D8 /* LocaExample */,
 				3C4B3C461DE6EEB8005D02D8 /* Products */,
+				3C4B3C5A1DE6EF1B005D02D8 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +66,14 @@
 				3C4B3C541DE6EEB8005D02D8 /* Info.plist */,
 			);
 			path = LocaExample;
+			sourceTree = "<group>";
+		};
+		3C4B3C5A1DE6EF1B005D02D8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				3C4B3C5B1DE6EF1B005D02D8 /* Loca.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
