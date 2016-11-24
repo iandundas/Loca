@@ -44,11 +44,27 @@ public enum LocationProviderError: ErrorType{
     }
 }
 
+public enum Accuracy {
+    case Accurate(to: CLLocationAccuracy, at: CLLocation)
+    case Inaccurate(to: CLLocationAccuracy, at: CLLocation)
+}
+
+extension Accuracy: CustomDebugStringConvertible{
+    public var debugDescription: String{
+        switch self{
+        case let .Accurate(to: accuracy, at: location):
+            return "✅ accurate to \(accuracy) meters: \(location)"
+        case let .Inaccurate(to: accuracy, at: location):
+            return "❌ accurate only to \(accuracy) meters: \(location)"
+        }
+    }
+}
+
 public protocol LocationProviderType{
     var locationsStream: Stream<CLLocation?> {get}
     var locationStateStream: Stream<LocationState> {get}
     
-    func accurateLocationOperation(meterAccuracy accuracy: CLLocationAccuracy) -> Operation<CLLocation, LocationProviderError>
+    func accurateLocationOperation(meterAccuracy accuracy: CLLocationAccuracy) -> Operation<Accuracy, LocationProviderError>
 }
 
 
@@ -134,14 +150,15 @@ public final class LocationProvider: LocationProviderType{
     
     /* 
         - Starts Location tracking. Fetches the current Location as an Operation
-        - Completes when Location is found
+        - Completes when Location is found to required accuracy
         - Fails when there was an error 
+        - posts intermediate inaccurate results (.Inaccurate) which can be filtered if required.
      
         NB ideally you'd use something this with the following appended:
          .timeout(10, with: .CannotLocate, on: Queue.main)
          .retry(3)
      */
-    public func accurateLocationOperation(meterAccuracy accuracy: CLLocationAccuracy) -> Operation<CLLocation, LocationProviderError>{
+    public func accurateLocationOperation(meterAccuracy accuracy: CLLocationAccuracy) -> Operation<Accuracy, LocationProviderError>{
         return Operation { observer in
             let bag = DisposeBag()
             
@@ -152,8 +169,9 @@ public final class LocationProvider: LocationProviderType{
                     
                     switch(state){
                     case .Known(let location):
-                        print("Found location but not accurate enough (\(location.horizontalAccuracy). Skipping..")
-                        // Known location with insufficient accuracy. Just wait for the next location.
+                        // Known location with insufficient accuracy. Report this and keep trying:
+                        print("Found location but not accurate enough (meters: \(location.horizontalAccuracy)). Still scanning..")
+                        observer.next(Accuracy.Inaccurate(to: location.horizontalAccuracy, at: location))
                         break
                         
                     case .Error(let error):
@@ -170,13 +188,11 @@ public final class LocationProvider: LocationProviderType{
                 }
                 
                 // We've got a location within desired accuracy range. 🎉
-                observer.next(location)
+                observer.next(Accuracy.Accurate(to: location.horizontalAccuracy, at: location))
                 observer.completed()
             }.disposeIn(bag)
             
             return bag
         }
     }
-    
-    
-    }
+}
