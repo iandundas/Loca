@@ -8,22 +8,44 @@
 
 /* Begin PBXBuildFile section */
 		3C4B3C491DE6EEB8005D02D8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C481DE6EEB8005D02D8 /* AppDelegate.swift */; };
-		3C4B3C4B1DE6EEB8005D02D8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4A1DE6EEB8005D02D8 /* ViewController.swift */; };
+		3C4B3C4B1DE6EEB8005D02D8 /* PermissionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4A1DE6EEB8005D02D8 /* PermissionsViewController.swift */; };
 		3C4B3C4E1DE6EEB8005D02D8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4C1DE6EEB8005D02D8 /* Main.storyboard */; };
 		3C4B3C501DE6EEB8005D02D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C4F1DE6EEB8005D02D8 /* Assets.xcassets */; };
 		3C4B3C531DE6EEB8005D02D8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C4B3C511DE6EEB8005D02D8 /* LaunchScreen.storyboard */; };
-		3C4B3C5C1DE6EF1B005D02D8 /* Loca.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C5B1DE6EF1B005D02D8 /* Loca.framework */; };
+		3C4B3C611DE71152005D02D8 /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4B3C601DE71152005D02D8 /* LocationsViewController.swift */; };
+		3C4B3C641DE717C9005D02D8 /* Loca.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C631DE717C9005D02D8 /* Loca.framework */; };
+		3C4B3C651DE717C9005D02D8 /* Loca.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C631DE717C9005D02D8 /* Loca.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		3C4B3C681DE717F8005D02D8 /* ReactiveKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C671DE717F8005D02D8 /* ReactiveKit.framework */; };
+		3C4B3C691DE717F8005D02D8 /* ReactiveKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3C4B3C671DE717F8005D02D8 /* ReactiveKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3C4B3C661DE717C9005D02D8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3C4B3C691DE717F8005D02D8 /* ReactiveKit.framework in Embed Frameworks */,
+				3C4B3C651DE717C9005D02D8 /* Loca.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3C4B3C451DE6EEB8005D02D8 /* LocaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LocaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C4B3C481DE6EEB8005D02D8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3C4B3C4A1DE6EEB8005D02D8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3C4B3C4A1DE6EEB8005D02D8 /* PermissionsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsViewController.swift; sourceTree = "<group>"; };
 		3C4B3C4D1DE6EEB8005D02D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3C4B3C4F1DE6EEB8005D02D8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3C4B3C521DE6EEB8005D02D8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3C4B3C541DE6EEB8005D02D8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C4B3C5B1DE6EF1B005D02D8 /* Loca.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Loca.framework; path = "../../../../Desktop/Build/Products/Debug-iphonesimulator/Loca.framework"; sourceTree = "<group>"; };
+		3C4B3C601DE71152005D02D8 /* LocationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
+		3C4B3C631DE717C9005D02D8 /* Loca.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Loca.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C4B3C671DE717F8005D02D8 /* ReactiveKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ReactiveKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,7 +53,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C4B3C5C1DE6EF1B005D02D8 /* Loca.framework in Frameworks */,
+				3C4B3C681DE717F8005D02D8 /* ReactiveKit.framework in Frameworks */,
+				3C4B3C641DE717C9005D02D8 /* Loca.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +64,8 @@
 		3C4B3C3C1DE6EEB8005D02D8 = {
 			isa = PBXGroup;
 			children = (
+				3C4B3C671DE717F8005D02D8 /* ReactiveKit.framework */,
+				3C4B3C631DE717C9005D02D8 /* Loca.framework */,
 				3C4B3C471DE6EEB8005D02D8 /* LocaExample */,
 				3C4B3C461DE6EEB8005D02D8 /* Products */,
 				3C4B3C5A1DE6EF1B005D02D8 /* Frameworks */,
@@ -58,8 +83,7 @@
 		3C4B3C471DE6EEB8005D02D8 /* LocaExample */ = {
 			isa = PBXGroup;
 			children = (
-				3C4B3C481DE6EEB8005D02D8 /* AppDelegate.swift */,
-				3C4B3C4A1DE6EEB8005D02D8 /* ViewController.swift */,
+				3C4B3C621DE71159005D02D8 /* Classes */,
 				3C4B3C4C1DE6EEB8005D02D8 /* Main.storyboard */,
 				3C4B3C4F1DE6EEB8005D02D8 /* Assets.xcassets */,
 				3C4B3C511DE6EEB8005D02D8 /* LaunchScreen.storyboard */,
@@ -76,6 +100,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3C4B3C621DE71159005D02D8 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3C4B3C481DE6EEB8005D02D8 /* AppDelegate.swift */,
+				3C4B3C4A1DE6EEB8005D02D8 /* PermissionsViewController.swift */,
+				3C4B3C601DE71152005D02D8 /* LocationsViewController.swift */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -86,6 +120,7 @@
 				3C4B3C411DE6EEB8005D02D8 /* Sources */,
 				3C4B3C421DE6EEB8005D02D8 /* Frameworks */,
 				3C4B3C431DE6EEB8005D02D8 /* Resources */,
+				3C4B3C661DE717C9005D02D8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -149,8 +184,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3C4B3C4B1DE6EEB8005D02D8 /* ViewController.swift in Sources */,
+				3C4B3C4B1DE6EEB8005D02D8 /* PermissionsViewController.swift in Sources */,
 				3C4B3C491DE6EEB8005D02D8 /* AppDelegate.swift in Sources */,
+				3C4B3C611DE71152005D02D8 /* LocationsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,6 +348,7 @@
 				3C4B3C591DE6EEB8005D02D8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
