@@ -215,11 +215,15 @@ public final class LocationProvider: LocationProviderType{
     }
     
     // Same as above but filters the intermediate Inaccurate results
-    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval = 30) -> Operation<Accuracy, LocationProviderError>{
+    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval = 30) -> Operation<CLLocation, LocationProviderError>{
         return accurateLocationOperation().filter({ (accuracy: Accuracy) -> Bool in
             guard case .Accurate(_,_) = accuracy else {return false}
             return true
         })
+        .map { accuracy in
+            guard case let .Accurate(_,location) = accuracy else {fatalError()}
+            return location
+        }
         
     }
 }
