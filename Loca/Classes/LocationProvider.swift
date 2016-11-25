@@ -64,7 +64,7 @@ public protocol LocationProviderType{
     func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<CLLocation?>
     func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<LocationState>
     func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval) -> Operation<Accuracy, LocationProviderError>
-    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval) -> Operation<Accuracy, LocationProviderError>
+    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval) -> Operation<CLLocation, LocationProviderError>
 }
 
 
