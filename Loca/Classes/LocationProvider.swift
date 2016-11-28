@@ -63,8 +63,8 @@ extension Accuracy: CustomDebugStringConvertible{
 public protocol LocationProviderType{
     func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<CLLocation?>
     func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<LocationState>
-    func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval) -> Operation<Accuracy, LocationProviderError>
-    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval) -> Operation<CLLocation, LocationProviderError>
+    func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval?) -> Operation<Accuracy, LocationProviderError>
+    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval?) -> Operation<CLLocation, LocationProviderError>
 }
 
 
@@ -170,7 +170,8 @@ public final class LocationProvider: LocationProviderType{
          .retry(3)
      */
     
-    public func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval = 30) -> Operation<Accuracy, LocationProviderError>{
+    
+    public func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval? = 30) -> Operation<Accuracy, LocationProviderError>{
         return Operation { observer in
             let bag = DisposeBag()
             
@@ -182,7 +183,7 @@ public final class LocationProvider: LocationProviderType{
                     else {
                         switch(state){
                         case .Known(let location):
-                            guard location.age <= maximumAge else {
+                            if let maximumAge = maximumAge where location.age > maximumAge{
                                 print("Location received was too old (\(location.age) seconds) - dumping")
                                 return
                             }
@@ -215,7 +216,7 @@ public final class LocationProvider: LocationProviderType{
     }
     
     // Same as above but filters the intermediate Inaccurate results
-    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval = 30) -> Operation<CLLocation, LocationProviderError>{
+    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval? = 30) -> Operation<CLLocation, LocationProviderError>{
         return accurateLocationOperation().filter({ (accuracy: Accuracy) -> Bool in
             guard case .Accurate(_,_) = accuracy else {return false}
             return true
