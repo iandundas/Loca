@@ -2,6 +2,8 @@
 
 A lightweight reactive wrapper around CLLocationManager
 
+_documentation + tests coming very soon (1 Dec 2016)_
+
 
 ## Dependancies:
 
