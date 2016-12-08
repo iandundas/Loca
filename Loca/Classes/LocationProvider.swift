@@ -137,7 +137,12 @@ public final class LocationProvider: LocationProviderType{
             
             
             locationManager.desiredAccuracy = desiredAccuracy
-            locationManager.distanceFilter = distanceFilter
+            
+            if distanceFilter > 0{
+                locationManager.distanceFilter = distanceFilter
+            }else{
+                locationManager.distanceFilter = kCLDistanceFilterNone
+            }
             
             // Starting Location Tracking:
             locationManager.startUpdatingLocation()
