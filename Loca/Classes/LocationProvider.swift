@@ -137,7 +137,12 @@ public final class LocationProvider: LocationProviderType{
             
             
             locationManager.desiredAccuracy = desiredAccuracy
-            locationManager.distanceFilter = distanceFilter
+            
+            if distanceFilter > 0{
+                locationManager.distanceFilter = distanceFilter
+            }else{
+                locationManager.distanceFilter = kCLDistanceFilterNone
+            }
             
             // Starting Location Tracking:
             locationManager.startUpdatingLocation()
@@ -217,14 +222,14 @@ public final class LocationProvider: LocationProviderType{
     
     // Same as above but filters the intermediate Inaccurate results
     public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval? = 30) -> Operation<CLLocation, LocationProviderError>{
-        return accurateLocationOperation().filter({ (accuracy: Accuracy) -> Bool in
-            guard case .Accurate(_,_) = accuracy else {return false}
-            return true
-        })
-        .map { accuracy in
-            guard case let .Accurate(_,location) = accuracy else {fatalError()}
-            return location
-        }
-        
+        return accurateLocationOperation(meterAccuracy: desiredAccuracy, distanceFilter: distanceFilter, maximumAge: maximumAge)
+            .filter { (accuracy: Accuracy) -> Bool in
+                guard case .Accurate(_,_) = accuracy else {return false}
+                return true
+            }
+            .map { accuracy in
+                guard case let .Accurate(_,location) = accuracy else {fatalError()}
+                return location
+            }
     }
 }
