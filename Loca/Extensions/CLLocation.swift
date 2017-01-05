@@ -14,7 +14,7 @@ public extension CLLocation{
         self.init(latitude: coordinate.latitude, longitude: coordinate.longitude)
     }
     
-    public var age: NSTimeInterval {
-        return abs(NSDate().timeIntervalSinceDate(timestamp))
+    public var age: TimeInterval {
+        return abs(Date().timeIntervalSince(timestamp))
     }
 }

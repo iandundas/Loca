@@ -7,3 +7,5 @@
 //
 
 import Foundation
+
+let LocaQueue = DispatchQueue(label: "com.reactivekit.sample")

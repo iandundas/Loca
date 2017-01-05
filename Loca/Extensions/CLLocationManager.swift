@@ -9,14 +9,15 @@
 import Foundation
 import CoreLocation
 import ReactiveKit
+import Bond
 
 extension CLLocationManager {
     public var rDelegate: ProtocolProxy {
         return protocolProxyFor(CLLocationManagerDelegate.self, setter: NSSelectorFromString("setDelegate:"))
     }
     
-    public static func statusStream() -> Stream<CLAuthorizationStatus>{
-        return Stream<CLAuthorizationStatus> { observer in
+    public static func statusStream() -> Signal1<CLAuthorizationStatus>{
+        return Signal1 { observer in
             let bag = DisposeBag()
             let locationManager = CLLocationManager()
             let delegateProxy = locationManager.rDelegate

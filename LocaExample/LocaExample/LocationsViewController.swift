@@ -18,7 +18,7 @@ class LocationsViewController: UIViewController{
     @IBOutlet var lastKnownLabel: UILabel!
     @IBOutlet var stackView: UIStackView!
     
-    @IBAction func didTapStart(sender: AnyObject) {
+    @IBAction func didTapStart(_ sender: AnyObject) {
         start()
     }
     
@@ -60,13 +60,13 @@ class LocationsViewController: UIViewController{
             }.disposeIn(rBag)
     }
     
-    func addMessage(message: String) {
+    func addMessage(_ message: String) {
         let label = UILabel()
         label.text = message
         label.numberOfLines = 0
         label.sizeToFit()
         
-        stackView.insertArrangedSubview(label, atIndex: 0)
+        stackView.insertArrangedSubview(label, at: 0)
     }
     
     

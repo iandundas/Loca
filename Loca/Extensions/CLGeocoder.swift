@@ -32,7 +32,7 @@ public extension CLGeocoder{
 //    let x = m!["FormattedAddressLines"]
 //    let n = placemark.areasOfInterest
     
-    public static func geocodeStreetnameOperation(location: CLLocation) -> Operation<String, NSError>{
+    public static func geocodeStreetnameOperation(_ location: CLLocation) -> Signal<String, NSError>{
         return CLGeocoder.reverseGeocodeOperation(location: location).first()
             .map {$0.first}.ignoreNil()
             .map { placemark -> String in
@@ -42,7 +42,7 @@ public extension CLGeocoder{
         }
     }
     
-    public static func geocodeShortAddressOperation(location: CLLocation) -> Operation<String, NSError>{
+    public static func geocodeShortAddressOperation(_ location: CLLocation) -> Operation<String, NSError>{
         return CLGeocoder.reverseGeocodeOperation(location: location).first()
             .map {$0.first}.ignoreNil()
             .map { placemark -> String in
@@ -52,13 +52,13 @@ public extension CLGeocoder{
         }
     }
     
-    public static func reverseGeocodeOperation(location location: CLLocation) -> Operation<Array<CLPlacemark>, NSError>{
+    public static func reverseGeocodeOperation(location: CLLocation) -> Operation{
         return Operation { observer in
             let geocoder = CLGeocoder()
             
             geocoder.reverseGeocodeLocation(location) { placemarks, error in
                 if let error = error{
-                    observer.failure(error)
+                    observer.failed(error)
                 }
                 else{
                     observer.next(placemarks ?? [])
@@ -70,7 +70,7 @@ public extension CLGeocoder{
                 geocoder.cancelGeocode()
             }
         }
-        .executeIn(Queue.background.context)
+        .executeIn(LocaQueue.context)
         .observeIn(Queue.main.context)
     }
 }

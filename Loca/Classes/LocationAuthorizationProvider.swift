@@ -11,19 +11,19 @@ import CoreLocation
 import ReactiveKit
 
 public enum LocationAuthorizationState{
-    case NoDecisionYet
-    case UserNotPermitted
-    case UserDisabled
-    case Authorized(always: Bool)
+    case noDecisionYet
+    case userNotPermitted
+    case userDisabled
+    case authorized(always: Bool)
     
-    public static func fromClAuthorizationStatus(status: CLAuthorizationStatus) -> LocationAuthorizationState{
+    public static func fromClAuthorizationStatus(_ status: CLAuthorizationStatus) -> LocationAuthorizationState{
         switch(status){
-        case .AuthorizedAlways: return .Authorized(always: true)
-        case .AuthorizedWhenInUse: return .Authorized(always: false)
-        case .Restricted: return .UserNotPermitted
-        case .Denied: return .UserDisabled
-        case .NotDetermined: fallthrough
-        default: return .NoDecisionYet
+        case .authorizedAlways: return .authorized(always: true)
+        case .authorizedWhenInUse: return .authorized(always: false)
+        case .restricted: return .userNotPermitted
+        case .denied: return .userDisabled
+        case .notDetermined: fallthrough
+        default: return .noDecisionYet
         }
     }
     
@@ -32,48 +32,48 @@ public enum LocationAuthorizationState{
     }
 }
 
-public enum LocationAuthorizationError: ErrorType{
-    case Denied, Restricted
+public enum LocationAuthorizationError: Error{
+    case denied, restricted
 }
 
 public protocol LocationAuthorizationProviderType{
     var state: Property<LocationAuthorizationState> {get}
-    static var stateStream: Stream<LocationAuthorizationState> {get}
+    static var stateStream: Signal1<LocationAuthorizationState> {get}
     
-    func authorize() -> Operation<LocationAuthorizationState, LocationAuthorizationError>
+    func authorize() -> Signal<LocationAuthorizationState, LocationAuthorizationError>
 }
 
 
 public final class LocationAuthorizationProvider: LocationAuthorizationProviderType{
     
     public let state = Property<LocationAuthorizationState>(LocationAuthorizationState.currentState)
-    private let bag = DisposeBag()
+    fileprivate let bag = DisposeBag()
     
     public init(){
         LocationAuthorizationProvider.stateStream
-            .bindTo(state)
+            .bind(to:state)
             .disposeIn(bag)
     }
     
-    public static var stateStream: Stream<LocationAuthorizationState>{
+    public static var stateStream: Signal1<LocationAuthorizationState>{
         return CLLocationManager.statusStream().map { LocationAuthorizationState.fromClAuthorizationStatus($0) }
     }
     
-    public func authorize() -> Operation<LocationAuthorizationState, LocationAuthorizationError>{
+    public func authorize() -> Signal<LocationAuthorizationState, LocationAuthorizationError>{
         
-        return Operation<LocationAuthorizationState, LocationAuthorizationError> { observer in
+        return Signal { observer in
             
             let startingState = LocationAuthorizationState.currentState
-            guard case .NoDecisionYet = startingState else {
+            guard case .noDecisionYet = startingState else {
                 switch(startingState){
-                case .Authorized(always: _):
+                case .authorized(always: _):
                     observer.next(startingState)
                     observer.completed()
-                case .UserNotPermitted:
-                    observer.failure(LocationAuthorizationError.Restricted)
-                case .UserDisabled:fallthrough
+                case .userNotPermitted:
+                    observer.failed(LocationAuthorizationError.restricted)
+                case .userDisabled:fallthrough
                 default:
-                    observer.failure(LocationAuthorizationError.Denied)
+                    observer.failed(LocationAuthorizationError.denied)
                 }
                 return SimpleDisposable()
             }
@@ -89,18 +89,18 @@ public final class LocationAuthorizationProvider: LocationAuthorizationProviderT
             })
             .observeNext { status in
                 switch(status){
-                case .Authorized(_):
+                case .authorized(_):
                     observer.next(status)
                     observer.completed()
 
                 case .UserNotPermitted:
-                    observer.failure(LocationAuthorizationError.Restricted)
+                    observer.failed(LocationAuthorizationError.restricted)
                     
                 case .UserDisabled:
-                    observer.failure(LocationAuthorizationError.Denied)
+                    observer.failed(LocationAuthorizationError.denied)
                 
                 default:
-                    observer.next(.NoDecisionYet)
+                    observer.next(.noDecisionYet)
                 }
             }.disposeIn(bag)
             

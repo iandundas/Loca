@@ -8,6 +8,9 @@
       location = "container:"
       name = "Frameworks">
       <FileRef
+         location = "group:Carthage/Checkouts/Bond/Bond.xcodeproj">
+      </FileRef>
+      <FileRef
          location = "group:Carthage/Checkouts/Nimble/Nimble.xcodeproj">
       </FileRef>
       <FileRef

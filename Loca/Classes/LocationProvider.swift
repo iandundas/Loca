@@ -11,60 +11,60 @@ import CoreLocation
 import ReactiveKit
 
 public enum LocationState{
-    case Known(CLLocation)
-    case Error(LocationProviderError)
+    case known(CLLocation)
+    case error(LocationProviderError)
 }
 
-public enum LocationProviderError: ErrorType{
+public enum LocationProviderError: Error{
     // "If the location service is unable to retrieve a location right away, it
     // reports a kCLErrorLocationUnknown error and keeps trying. In such a
     // situation, you can simply ignore the error and wait for a new event.
-    case Unknown
+    case unknown
     
     // "If a heading could not be determined because of strong interference
     // from nearby magnetic fields, this method returns kCLErrorHeadingFailure.
-    case CannotLocate
+    case cannotLocate
     
     // "If the user denies your application’s use of the location service,
     // this method reports a kCLErrorDenied error. Upon receiving such an error, 
     // you should stop the location service.
     // @id - this should not generally happen because we ensure permissions before trying. Maybe it happens if enabling airplane mode?
-    case Denied
+    case denied
     
     // Too much time passed, and any retries were unsuccessful (either we never received any results or never hit the accuracy we wanted)
-    case Timeout
+    case timeout
     
     public var message: String{
         switch self{
-        case .Timeout: return "Timed out whilst finding your location"
-        case .Denied: return "GPS is denied for this app"
-        case .CannotLocate: fallthrough
-        case .Unknown: return "Could not determine your location"
+        case .timeout: return "Timed out whilst finding your location"
+        case .denied: return "GPS is denied for this app"
+        case .cannotLocate: fallthrough
+        case .unknown: return "Could not determine your location"
         }
     }
 }
 
 public enum Accuracy {
-    case Accurate(to: CLLocationAccuracy, at: CLLocation)
-    case Inaccurate(to: CLLocationAccuracy, at: CLLocation)
+    case accurate(to: CLLocationAccuracy, at: CLLocation)
+    case inaccurate(to: CLLocationAccuracy, at: CLLocation)
 }
 
 extension Accuracy: CustomDebugStringConvertible{
     public var debugDescription: String{
         switch self{
-        case let .Accurate(to: accuracy, at: location):
+        case let .accurate(to: accuracy, at: location):
             return "✅ accurate to \(accuracy) meters: \(location)"
-        case let .Inaccurate(to: accuracy, at: location):
+        case let .inaccurate(to: accuracy, at: location):
             return "❌ accurate only to \(accuracy) meters: \(location)"
         }
     }
 }
 
 public protocol LocationProviderType{
-    func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<CLLocation?>
-    func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream<LocationState>
-    func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval?) -> Operation<Accuracy, LocationProviderError>
-    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: NSTimeInterval?) -> Operation<CLLocation, LocationProviderError>
+    func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream
+    func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance) -> Stream
+    func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: TimeInterval?) -> Operation
+    func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy, distanceFilter: CLLocationDistance, maximumAge: TimeInterval?) -> Operation
 }
 
 
@@ -72,20 +72,20 @@ public protocol LocationProviderType{
 
 public final class LocationProvider: LocationProviderType{
     
-    private let bag = DisposeBag()
+    fileprivate let bag = DisposeBag()
     public init?(){
         let authorized = CLLocationManager.authorizationStatus()
-        guard authorized == .AuthorizedWhenInUse || authorized == .AuthorizedAlways else {
+        guard authorized == .authorizedWhenInUse || authorized == .authorizedAlways else {
             print("Warning: can't start LocationProvider as we do not have permission from the User yet")
             return nil
         }
     }
     
     
-    public func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone) -> Stream<CLLocation?>{
+    public func locationsStream(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone) -> Signal1<CLLocation?>{
         return self.locationStateStream(meterAccuracy: kCLLocationAccuracyBest, distanceFilter: distanceFilter)
             .map { (state: LocationState) -> CLLocation? in
-                guard case .Known(let location) = state else { return nil }
+                guard case .known(let location) = state else { return nil }
                 return location
             }
     }
@@ -96,8 +96,8 @@ public final class LocationProvider: LocationProviderType{
      When disposed, location tracking is ended.
      */
     
-    public func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone) -> Stream<LocationState>{
-        return Stream<LocationState> { observer in
+    public func locationStateStream(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone) -> Signal1<LocationState>{
+        return Signal1 { observer in
             let bag = DisposeBag()
             let locationManager = CLLocationManager()
             
@@ -107,11 +107,11 @@ public final class LocationProvider: LocationProviderType{
                 .streamFor(didUpdateLocationsSelector, map: { (manager: CLLocationManager, locations: NSArray) -> [CLLocation] in
                     return locations as! [CLLocation]
                 })
-                .observeIn(Queue.background.context)
+                .observeIn(LocaQueue.context)
                 .map {$0.last}
                 .observeNext {location in
                     guard let location = location else {return}
-                    observer.next(LocationState.Known(location))
+                    observer.next(LocationState.known(location))
                 }.disposeIn(bag)
             
             
@@ -121,7 +121,7 @@ public final class LocationProvider: LocationProviderType{
                 .streamFor(didSendErrorSelector, map: { (manager: CLLocationManager, error: NSError) -> NSError in
                     return error
                 })
-                .observeIn(Queue.background.context)
+                .observeIn(LocaQueue.context)
                 .observeNext {error in
                     switch(error.code){
                     case CLError.LocationUnknown.rawValue:
@@ -129,7 +129,7 @@ public final class LocationProvider: LocationProviderType{
                     case CLError.HeadingFailure.rawValue:
                         observer.next(LocationState.Error(LocationProviderError.CannotLocate))
                     case CLError.Denied.rawValue:
-                        observer.next(LocationState.Error(LocationProviderError.Denied))
+                        observer.next(LocationState.Error(LocationProviderError.denied))
                     default:
                         observer.next(LocationState.Error(LocationProviderError.CannotLocate))
                     }
@@ -150,7 +150,7 @@ public final class LocationProvider: LocationProviderType{
             // if a location update has already been delivered, you can query the locationManager for it immediately
             if let location = locationManager.location{
                 // NB this first one could be very old. Observers should check the timestamp and see if they're happy with it or not.
-                observer.next(LocationState.Known(location))
+                observer.next(LocationState.known(location))
             }
             
             // Cleaning up:
@@ -176,19 +176,19 @@ public final class LocationProvider: LocationProviderType{
      */
     
     
-    public func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval? = 30) -> Operation<Accuracy, LocationProviderError>{
+    public func accurateLocationOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: TimeInterval? = 30) -> Signal<Accuracy, LocationProviderError>{
         return Operation { observer in
             let bag = DisposeBag()
             
             self.locationStateStream(meterAccuracy: desiredAccuracy, distanceFilter: distanceFilter)
-                .observeIn(Queue.background.context)
+                .observeIn(LocaQueue.context)
                 .observeNext { state in
                     
-                    guard case let .Known(location) = state where  (0 ... desiredAccuracy) ~= location.horizontalAccuracy && location.age < maximumAge
+                    guard case let .known(location) = state,  (0 ... desiredAccuracy) ~= location.horizontalAccuracy && location.age < maximumAge
                     else {
                         switch(state){
-                        case .Known(let location):
-                            if let maximumAge = maximumAge where location.age > maximumAge{
+                        case .known(let location):
+                            if let maximumAge = maximumAge, location.age > maximumAge{
                                 print("Location received was too old (\(location.age) seconds) - dumping")
                                 return
                             }
@@ -204,14 +204,14 @@ public final class LocationProvider: LocationProviderType{
                                  situation, you can simply ignore the error and wait for a new event. */
                             }
                             else {
-                                observer.failure(error)
+                                observer.failed(error)
                             }
                         }
                         return
                     }
                 
                     // We've got a location within desired accuracy range. 🎉
-                    observer.next(Accuracy.Accurate(to: location.horizontalAccuracy, at: location))
+                    observer.next(Accuracy.accurate(to: location.horizontalAccuracy, at: location))
                     observer.completed()
                     
             }.disposeIn(bag)
@@ -221,14 +221,14 @@ public final class LocationProvider: LocationProviderType{
     }
     
     // Same as above but filters the intermediate Inaccurate results
-    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: NSTimeInterval? = 30) -> Operation<CLLocation, LocationProviderError>{
+    public func accurateLocationOnlyOperation(meterAccuracy desiredAccuracy: CLLocationAccuracy = kCLLocationAccuracyNearestTenMeters, distanceFilter: CLLocationDistance = kCLDistanceFilterNone, maximumAge: TimeInterval? = 30) -> Signal<CLLocation, LocationProviderError>{
         return accurateLocationOperation(meterAccuracy: desiredAccuracy, distanceFilter: distanceFilter, maximumAge: maximumAge)
             .filter { (accuracy: Accuracy) -> Bool in
-                guard case .Accurate(_,_) = accuracy else {return false}
+                guard case .accurate(_,_) = accuracy else {return false}
                 return true
             }
             .map { accuracy in
-                guard case let .Accurate(_,location) = accuracy else {fatalError()}
+                guard case let .accurate(_,location) = accuracy else {fatalError()}
                 return location
             }
     }
