@@ -1,3 +1,5 @@
-github "Quick/Nimble" "v4.1.0"
-github "Quick/Quick" "v0.9.3"
-github "iandundas/ReactiveKit" "ba4521a7954e73bb39649fb566c98506b13468fa"
+github "wokalski/Diff.swift" "0.4.2"
+github "quick/Nimble" "v5.1.1"
+github "Quick/Quick" "v1.0.0"
+github "ReactiveKit/ReactiveKit" "v3.1.1"
+github "ReactiveKit/Bond" "v6.0.0-beta.1"
