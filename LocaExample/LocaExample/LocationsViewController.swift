@@ -18,55 +18,56 @@ class LocationsViewController: UIViewController{
     @IBOutlet var lastKnownLabel: UILabel!
     @IBOutlet var stackView: UIStackView!
     
-    @IBAction func didTapStart(sender: AnyObject) {
+    @IBAction func didTapStart(_ sender: AnyObject) {
         start()
     }
     
     func start() {
         guard let locationProvider = locationProvider else {return}
         
-        let operation = locationProvider.accurateLocationOperation(meterAccuracy: 10, distanceFilter: 5, maximumAge: 10)
-            .timeout(15, with: LocationProviderError.Timeout, on: Queue.main)
-            .observeIn(Queue.main.context)
+        let operation = locationProvider.accurateLocation(meterAccuracy: 10, distanceFilter: 5, maximumAge: 10)
+            .timeout(after: 15, with: LocationProviderError.timeout, on: DispatchQueue.main)
+            .observeIn(DispatchQueue.main.context)
             .shareReplay()
             
         operation.observe { [weak self] event in
             switch event {
-            case let .Next(accuracy):
+            case let .next(accuracy):
                 self?.addMessage(accuracy.debugDescription)
                 
-            case let .Failure(error):
+            case let .failed(error):
                 self?.addMessage("💔 Failure: \(error)")
                 
-            case .Completed:
+            case .completed:
                 self?.addMessage("Completed.")
             }
-        }.disposeIn(rBag)
+            }.dispose(in: reactive.bag)
         
-        operation
-            .toStream(justLogError: false)
+        operation.suppressError(logging: true)
             .map { accuracy -> String in
                 switch accuracy {
-                case let .Accurate(to: _, at: location):
+                case let .accurate(to: _, at: location):
                     return location.timestamp.description
-                case let .Inaccurate(to: _, at: location):
+                case let .inaccurate(to: _, at: location):
                     return location.timestamp.description
                 }
             }
-            .map {"Last updated: \($0)"}
-            .combineLatestWith(Stream<UILabel>.just(lastKnownLabel))
-            .observeNext { (string, label) in
+            .map { (date: String) -> String in
+                return "Last updated: \(date)"
+            }
+            .combineLatest(with: SafeSignal<UILabel>.just(lastKnownLabel))
+            .observeNext { (string: String, label: UILabel) in
                 label.text = string
-            }.disposeIn(rBag)
+            }.dispose(in: reactive.bag)
     }
     
-    func addMessage(message: String) {
+    func addMessage(_ message: String) {
         let label = UILabel()
         label.text = message
         label.numberOfLines = 0
         label.sizeToFit()
         
-        stackView.insertArrangedSubview(label, atIndex: 0)
+        stackView.insertArrangedSubview(label, at: 0)
     }
     
     

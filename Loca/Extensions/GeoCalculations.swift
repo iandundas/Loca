@@ -9,7 +9,7 @@
 import MapKit
 
 // credit: http://stackoverflow.com/a/31423828
-public func fittingRegionForCoordinates(coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion? {
+public func fittingRegionForCoordinates(_ coordinates: [CLLocationCoordinate2D]) -> MKCoordinateRegion? {
     
     guard coordinates.count > 0 else { return nil }
     

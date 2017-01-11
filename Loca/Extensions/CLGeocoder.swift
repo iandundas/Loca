@@ -12,7 +12,7 @@ import ReactiveKit
 
 public let GeocoderTimeoutError =  NSError(domain: "tacks", code: 0, userInfo: [NSLocalizedDescriptionKey : "Timed out whilst geocoding"])
 
-public extension CLGeocoder{
+public extension CLGeocoder {
     
     
 //    let a = placemark.name; // eg. Apple Inc.
@@ -32,33 +32,33 @@ public extension CLGeocoder{
 //    let x = m!["FormattedAddressLines"]
 //    let n = placemark.areasOfInterest
     
-    public static func geocodeStreetnameOperation(location: CLLocation) -> Operation<String, NSError>{
+    public static func geocodeStreetnameOperation(_ location: CLLocation) -> Signal<String, NSError>{
         return CLGeocoder.reverseGeocodeOperation(location: location).first()
             .map {$0.first}.ignoreNil()
             .map { placemark -> String in
                 return [placemark.subThoroughfare, placemark.thoroughfare]
                     .flatMap{$0}
-                    .joinWithSeparator(" ")
+                    .joined(separator: " ")
         }
     }
     
-    public static func geocodeShortAddressOperation(location: CLLocation) -> Operation<String, NSError>{
+    public static func geocodeShortAddressOperation(_ location: CLLocation) -> Signal<String, NSError>{
         return CLGeocoder.reverseGeocodeOperation(location: location).first()
             .map {$0.first}.ignoreNil()
             .map { placemark -> String in
                 return [placemark.subThoroughfare, placemark.thoroughfare, placemark.locality]
                     .flatMap{$0}
-                    .joinWithSeparator(" ")
+                    .joined(separator: " ")
         }
     }
     
-    public static func reverseGeocodeOperation(location location: CLLocation) -> Operation<Array<CLPlacemark>, NSError>{
-        return Operation { observer in
+    public static func reverseGeocodeOperation(location: CLLocation) -> Signal<Array<CLPlacemark>, NSError>{
+        return Signal { observer in
             let geocoder = CLGeocoder()
             
             geocoder.reverseGeocodeLocation(location) { placemarks, error in
-                if let error = error{
-                    observer.failure(error)
+                if let error = error as? NSError{
+                    observer.failed(error)
                 }
                 else{
                     observer.next(placemarks ?? [])
@@ -70,7 +70,7 @@ public extension CLGeocoder{
                 geocoder.cancelGeocode()
             }
         }
-        .executeIn(Queue.background.context)
-        .observeIn(Queue.main.context)
+        .executeIn(LocaQueue.context)
+        .observeIn(DispatchQueue.main.context)
     }
 }

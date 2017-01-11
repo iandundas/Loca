@@ -12,22 +12,23 @@ import Loca
 
 class PermissionsViewController: UIViewController {
 
-    private let authProvider = LocationAuthorizationProvider()
+    fileprivate let authProvider = LocationAuthorizationProvider()
     
-    let stream = PushStream<Void>()
+    let stream = SafePublishSubject<Void>()
     
-    @IBAction func tappedPermission(sender: AnyObject) {
+    @IBAction func tappedPermission(_ sender: AnyObject) {
         authProvider.authorize().observe { [weak self] event in
             guard let strongSelf = self else {return}
             
             switch(event){
-            case .Completed:
-                strongSelf.performSegueWithIdentifier("ShowLocation", sender: nil)
-            case .Failure(_):
+            case .completed:
+                strongSelf.performSegue(withIdentifier: "ShowLocation", sender: nil)
+            case .failed(_):
                 print("failed")
             default:break;
             }
-        }.disposeIn(rBag)
+            
+        }.dispose(in: reactive.bag)
     }
     
     override func viewDidLoad() {
@@ -41,9 +42,9 @@ class PermissionsViewController: UIViewController {
     }
 
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         //
-        guard let destination = segue.destinationViewController as? LocationsViewController else {return}
+        guard let destination = segue.destination as? LocationsViewController else {return}
         guard let locationProvider = LocationProvider() else {return}
         
         destination.locationProvider = locationProvider
