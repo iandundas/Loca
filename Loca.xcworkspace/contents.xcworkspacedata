@@ -16,9 +16,6 @@
       <FileRef
          location = "group:Carthage/Checkouts/Quick/Quick.xcodeproj">
       </FileRef>
-      <FileRef
-         location = "group:Carthage/Checkouts/ReactiveKit/ReactiveKit.xcodeproj">
-      </FileRef>
    </Group>
    <FileRef
       location = "container:Loca.xcodeproj">

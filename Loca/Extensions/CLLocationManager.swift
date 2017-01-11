@@ -6,31 +6,54 @@
 //  Copyright © 2016 Ian Dundas. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreLocation
 import ReactiveKit
 import Bond
 
-extension CLLocationManager {
-    public var rDelegate: ProtocolProxy {
-        return protocolProxyFor(CLLocationManagerDelegate.self, setter: NSSelectorFromString("setDelegate:"))
+public extension ReactiveExtensions where Base: CLLocationManager {
+
+    public var delegate: ProtocolProxy {
+        return base.protocolProxy(for: CLLocationManagerDelegate.self, setter: NSSelectorFromString("setDelegate:"))
     }
     
-    public static func statusStream() -> Signal1<CLAuthorizationStatus>{
-        return Signal1 { observer in
+    public var authorizationStatus: Signal<CLAuthorizationStatus, NoError>{
+        let didChangeAuthStatus = #selector(CLLocationManagerDelegate.locationManager(_:didChangeAuthorization:))
+        
+        return delegate.signal(for: didChangeAuthStatus) { (subject: PublishSubject<CLAuthorizationStatus, NoError>, _: CLLocationManager, status: CLAuthorizationStatus) in
+            subject.next(status)
+        }
+    }
+    
+    public var didUpdateLocations: Signal<[CLLocation], NoError> {
+        let didUpdateLocations = #selector(CLLocationManagerDelegate.locationManager(_:didUpdateLocations:))
+        
+        return delegate.signal(for: didUpdateLocations) { (subject: PublishSubject<[CLLocation], NoError>, _: CLLocationManager, locations: NSArray) in
+            subject.next(locations as! [CLLocation])
+        }
+    }
+    
+    public var didSendError: Signal<Error, NoError> {
+        let didFailWithError = #selector(CLLocationManagerDelegate.locationManager(_:didFailWithError:))
+        
+        return delegate.signal(for: didFailWithError) { (subject: PublishSubject<Error, NoError>, _: CLLocationManager, error: NSError) in
+            subject.next(error)
+        }
+    }
+}
+
+extension CLLocationManager {
+    
+    public static func statusStream() -> SafeSignal<CLAuthorizationStatus>{
+        return SafeSignal { observer in
             let bag = DisposeBag()
             let locationManager = CLLocationManager()
-            let delegateProxy = locationManager.rDelegate
             
-            let didChangeAuthStatusSelector = #selector(CLLocationManagerDelegate.locationManager(_:didChangeAuthorizationStatus:))
-            delegateProxy.streamFor(didChangeAuthStatusSelector, map: { (manager: CLLocationManager, status: CLAuthorizationStatus) -> CLAuthorizationStatus in
-                return status
-            })
-            .observeNext { status in
+            locationManager.reactive.authorizationStatus.observeNext { status in
                 observer.next(status)
-            }.disposeIn(bag)
-
-            BlockDisposable{locationManager}.disposeIn(bag) // retain locationManager in block
+            }.dispose(in: bag)
+            
+            BlockDisposable{_ = locationManager}.dispose(in: bag) // retain locationManager in block
             return bag
         }
     }

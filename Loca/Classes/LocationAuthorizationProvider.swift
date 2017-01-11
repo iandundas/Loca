@@ -52,7 +52,7 @@ public final class LocationAuthorizationProvider: LocationAuthorizationProviderT
     public init(){
         LocationAuthorizationProvider.stateStream
             .bind(to:state)
-            .disposeIn(bag)
+            .dispose(in: bag)
     }
     
     public static var stateStream: Signal1<LocationAuthorizationState>{
@@ -81,34 +81,31 @@ public final class LocationAuthorizationProvider: LocationAuthorizationProviderT
             
             let bag = DisposeBag()
             let locationManager = CLLocationManager()
-            let delegateProxy = locationManager.rDelegate
             
-            let didChangeAuthStatusSelector = #selector(CLLocationManagerDelegate.locationManager(_:didChangeAuthorizationStatus:))
-            delegateProxy.streamFor(didChangeAuthStatusSelector, map: { (manager: CLLocationManager, status: CLAuthorizationStatus) -> LocationAuthorizationState in
-                return LocationAuthorizationState.fromClAuthorizationStatus(status)
-            })
-            .observeNext { status in
-                switch(status){
-                case .authorized(_):
-                    observer.next(status)
-                    observer.completed()
+            locationManager.reactive.authorizationStatus
+                .map {LocationAuthorizationState.fromClAuthorizationStatus($0)}
+                .observeNext { status in
+                    switch(status){
+                    case .authorized(_):
+                        observer.next(status)
+                        observer.completed()
 
-                case .UserNotPermitted:
-                    observer.failed(LocationAuthorizationError.restricted)
+                    case .userNotPermitted:
+                        observer.failed(LocationAuthorizationError.restricted)
+                        
+                    case .userDisabled:
+                        observer.failed(LocationAuthorizationError.denied)
                     
-                case .UserDisabled:
-                    observer.failed(LocationAuthorizationError.denied)
-                
-                default:
-                    observer.next(.noDecisionYet)
-                }
-            }.disposeIn(bag)
+                    default:
+                        observer.next(.noDecisionYet)
+                    }
+                }.dispose(in: bag)
             
             locationManager.requestWhenInUseAuthorization()
             
             BlockDisposable{
-                locationManager // hold reference to it in the disposable block otherwise it's deallocated.
-            }.disposeIn(bag)
+                _ = locationManager // hold reference to it in the disposable block otherwise it's deallocated.
+            }.dispose(in: bag)
 
             return bag
         }
