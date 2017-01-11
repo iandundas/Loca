@@ -14,20 +14,21 @@ class PermissionsViewController: UIViewController {
 
     fileprivate let authProvider = LocationAuthorizationProvider()
     
-    let stream = PushStream<Void>()
+    let stream = SafePublishSubject<Void>()
     
     @IBAction func tappedPermission(_ sender: AnyObject) {
         authProvider.authorize().observe { [weak self] event in
             guard let strongSelf = self else {return}
             
             switch(event){
-            case .Completed:
-                strongSelf.performSegueWithIdentifier("ShowLocation", sender: nil)
-            case .Failure(_):
+            case .completed:
+                strongSelf.performSegue(withIdentifier: "ShowLocation", sender: nil)
+            case .failed(_):
                 print("failed")
             default:break;
             }
-        }.disposeIn(rBag)
+            
+        }.dispose(in: reactive.bag)
     }
     
     override func viewDidLoad() {
