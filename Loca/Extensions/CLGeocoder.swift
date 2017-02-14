@@ -31,24 +31,36 @@ public extension CLGeocoder {
 //    let m = placemark.addressDictionary
 //    let x = m!["FormattedAddressLines"]
 //    let n = placemark.areasOfInterest
+
     
-    public static func geocodeStreetnameOperation(_ location: CLLocation) -> Signal<String, NSError>{
-        return CLGeocoder.reverseGeocodeOperation(location: location).first()
+    public static func geocodeStreetnameOperation(location: CLLocation) -> Signal<String?, NSError>{
+        return CLGeocoder.reverseGeocodeOperation(location: location)
+            .first()
             .map {$0.first}.ignoreNil()
-            .map { placemark -> String in
-                return [placemark.subThoroughfare, placemark.thoroughfare]
-                    .flatMap{$0}
-                    .joined(separator: " ")
+            .map { placemark -> String? in
+                let best = [placemark.subThoroughfare, placemark.thoroughfare].flatMap{$0}
+                if best.count > 0 {
+                    return best.joined(separator: " ")
+                }
+                else {
+                    return placemark.name
+                }
         }
     }
     
-    public static func geocodeShortAddressOperation(_ location: CLLocation) -> Signal<String, NSError>{
+    public static func geocodeShortAddressOperation(location: CLLocation) -> Signal<String?, NSError>{
         return CLGeocoder.reverseGeocodeOperation(location: location).first()
             .map {$0.first}.ignoreNil()
-            .map { placemark -> String in
-                return [placemark.subThoroughfare, placemark.thoroughfare, placemark.locality]
+            .map { placemark -> String? in
+                let best = [placemark.subThoroughfare, placemark.thoroughfare, placemark.locality]
                     .flatMap{$0}
-                    .joined(separator: " ")
+                    
+                if best.count > 0 {
+                    return best.joined(separator: " ")
+                }
+                else{
+                    return placemark.name
+                }
         }
     }
     
@@ -57,8 +69,8 @@ public extension CLGeocoder {
             let geocoder = CLGeocoder()
             
             geocoder.reverseGeocodeLocation(location) { placemarks, error in
-                if let error = error as? NSError{
-                    observer.failed(error)
+                if let error = error{
+                    observer.failed(error as NSError)
                 }
                 else{
                     observer.next(placemarks ?? [])
@@ -69,8 +81,8 @@ public extension CLGeocoder {
             return BlockDisposable {
                 geocoder.cancelGeocode()
             }
-        }
-        .executeIn(LocaQueue.context)
-        .observeIn(DispatchQueue.main.context)
+            }
+            .executeIn(LocaQueue.context)
+            .observeIn(DispatchQueue.main.context)
     }
 }
