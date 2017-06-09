@@ -1,2 +1,2 @@
-github "ReactiveKit/ReactiveKit" "v3.1.1"
-github "ReactiveKit/Bond" ~> 6.0
+github "ReactiveKit/ReactiveKit" ~> 3.5
+github "ReactiveKit/Bond" ~> 6.2
